@@ -1,6 +1,6 @@
 package br.com.leandro.lsfood.payments.service;
 
-import br.com.leandro.lsfood.payments.dto.PaymentDto;
+import br.com.leandro.lsfood.payments.dto.PaymentDTO;
 import br.com.leandro.lsfood.payments.model.Payment;
 import br.com.leandro.lsfood.payments.model.PaymentStatus;
 import br.com.leandro.lsfood.payments.repository.PaymentRepository;
@@ -20,36 +20,36 @@ public class PaymentService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public PaymentDto save(PaymentDto paymentDto) {
-        Payment payment = modelMapper.map(paymentDto, Payment.class);
+    public PaymentDTO save(PaymentDTO paymentDTO) {
+        Payment payment = modelMapper.map(paymentDTO, Payment.class);
         payment.setPaymentStatus(PaymentStatus.CREATED);
         paymentRepository.save(payment);
 
-        return modelMapper.map(payment, PaymentDto.class);
+        return modelMapper.map(payment, PaymentDTO.class);
     }
 
-    public PaymentDto update(Long id, PaymentDto paymentDto) {
-        Payment payment = modelMapper.map(paymentDto, Payment.class);
+    public PaymentDTO update(Long id, PaymentDTO paymentDTO) {
+        Payment payment = modelMapper.map(paymentDTO, Payment.class);
         payment.setId(id);
         payment = paymentRepository.save(payment);
 
-        return modelMapper.map(payment, PaymentDto.class);
+        return modelMapper.map(payment, PaymentDTO.class);
     }
 
     public void deleteById(Long id) {
         paymentRepository.deleteById(id);
     }
 
-    public Page<PaymentDto> findAll(Pageable pageable) {
+    public Page<PaymentDTO> findAll(Pageable pageable) {
         return paymentRepository
                 .findAll(pageable)
-                .map(payment -> modelMapper.map(payment, PaymentDto.class));
+                .map(payment -> modelMapper.map(payment, PaymentDTO.class));
     }
 
-    public PaymentDto findById(Long id) {
+    public PaymentDTO findById(Long id) {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        return modelMapper.map(payment, PaymentDto.class);
+        return modelMapper.map(payment, PaymentDTO.class);
     }
 }
