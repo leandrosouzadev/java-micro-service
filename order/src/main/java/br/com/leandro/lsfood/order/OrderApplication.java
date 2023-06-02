@@ -1,4 +1,4 @@
-package br.com.leandro.lsfood.payments;
+package br.com.leandro.lsfood.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class PaymentsApplication {
-
+public class OrderApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(PaymentsApplication.class, args);
+		SpringApplication.run(OrderApplication.class, args);
 	}
 
 }
