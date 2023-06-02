@@ -1,6 +1,7 @@
 package br.com.leandro.lsfood.payments.domain.service;
 
 import br.com.leandro.lsfood.payments.domain.dto.PaymentDTO;
+import br.com.leandro.lsfood.payments.domain.http.OrderClient;
 import br.com.leandro.lsfood.payments.domain.model.Payment;
 import br.com.leandro.lsfood.payments.domain.model.PaymentStatus;
 import br.com.leandro.lsfood.payments.domain.repository.PaymentRepository;
@@ -19,6 +20,9 @@ public class PaymentService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private OrderClient orderClient;
 
     public PaymentDTO save(PaymentDTO paymentDTO) {
         Payment payment = modelMapper.map(paymentDTO, Payment.class);
@@ -51,5 +55,15 @@ public class PaymentService {
                 .orElseThrow(EntityNotFoundException::new);
 
         return modelMapper.map(payment, PaymentDTO.class);
+    }
+
+    public void approvePayment(Long id) {
+        Payment savedPayment = paymentRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+
+        savedPayment.setPaymentStatus(PaymentStatus.CONFIRMED);
+        savedPayment = paymentRepository.save(savedPayment);
+
+        orderClient.approveOrderPayment(savedPayment.getId());
     }
 }
