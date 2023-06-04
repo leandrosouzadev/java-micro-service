@@ -2,6 +2,7 @@ package br.com.leandro.lsfood.payments.api.controller;
 
 import br.com.leandro.lsfood.payments.domain.dto.PaymentDTO;
 import br.com.leandro.lsfood.payments.domain.service.PaymentService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,12 @@ public class PaymentController {
     }
 
     @PatchMapping("/{id}/approve-payment")
+    @CircuitBreaker(name = "updateOrder", fallbackMethod = "paymentAuthorizedPendingIntegration")
     public void approvePayment(@PathVariable @NotNull Long id) {
         paymentService.approvePayment(id);
+    }
+
+    public void paymentAuthorizedPendingIntegration(Long id, Exception e) {
+        paymentService.changeStatusPendingIntegration(id);
     }
 }

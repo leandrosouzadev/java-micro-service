@@ -58,12 +58,21 @@ public class PaymentService {
     }
 
     public void approvePayment(Long id) {
+        Payment savedPayment = changeStatus(id, PaymentStatus.CONFIRMED);
+        orderClient.approveOrderPayment(savedPayment.getId());
+    }
+
+    public void changeStatusPendingIntegration(Long id) {
+        changeStatus(id, PaymentStatus.CONFIRMED_NO_INTEGRATION);
+    }
+
+    private Payment changeStatus(Long id, PaymentStatus newStatus) {
         Payment savedPayment = paymentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        savedPayment.setPaymentStatus(PaymentStatus.CONFIRMED);
+        savedPayment.setPaymentStatus(newStatus);
         savedPayment = paymentRepository.save(savedPayment);
 
-        orderClient.approveOrderPayment(savedPayment.getId());
+        return savedPayment;
     }
 }
