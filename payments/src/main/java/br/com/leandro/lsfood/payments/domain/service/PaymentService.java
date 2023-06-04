@@ -54,7 +54,10 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        return modelMapper.map(payment, PaymentDTO.class);
+        PaymentDTO paymentDTO = modelMapper.map(payment, PaymentDTO.class);
+        paymentDTO.setItems(orderClient.getOrderItems(payment.getOrderId()).getItems());
+
+        return paymentDTO;
     }
 
     public void approvePayment(Long id) {
